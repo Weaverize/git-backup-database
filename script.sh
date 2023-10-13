@@ -36,6 +36,6 @@ git add backup.sql
 git commit -m "$(date)"
 
 echo "sending files to upstream"
-GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" git push --set-upstream origin main
+GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" git diff-index --quiet HEAD || git push --set-upstream origin main
 
 echo "backup done on $(date)"
