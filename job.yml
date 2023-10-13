@@ -1,0 +1,48 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: backup-db
+spec:
+  schedule: "@daily"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: backup-db
+            image: ghcr.io/weaverize/git-backup-database:latest
+            env:
+              - name: DB_TYPE
+                value: postgres
+              - name: DB_PORT
+                value: "5432"
+              - name: DB_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: db-credentials
+                    key: username
+              - name: DB_PASS
+                valueFrom:
+                  secretKeyRef:
+                    name: db-credentials
+                    key: password
+              - name: DB_HOST
+                value: localhost:5432
+              - name: DB_NAME
+                value: postgres
+              - name: GIT_URL
+                value: <path to repo>
+              - name: GIT_NAME
+                value: Weaverize Backup System
+              - name: GIT_EMAIL
+                value: dev@weaverize.com
+            volumeMounts:
+            - name: sshkey
+              mountPath: "/root/.ssh/"
+              readOnly: true
+          restartPolicy: OnFailure
+          volumes:
+          - name: sshkey
+            secret:
+              secretName: sshkey
+              defaultMode: 256

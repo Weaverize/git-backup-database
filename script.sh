@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 #Check if every required variable is set
 for variable in "DB_TYPE" "DB_PORT" "DB_HOST" "DB_NAME" "GIT_URL" "GIT_EMAIL" "GIT_NAME"; do
@@ -9,6 +10,9 @@ for variable in "DB_TYPE" "DB_PORT" "DB_HOST" "DB_NAME" "GIT_URL" "GIT_EMAIL" "G
 		exit 1
 	fi
 done
+
+git config --global user.email "$GIT_URL"
+git config --global user.name "$GIT_NAME"
 
 mkdir -p backup
 cd backup
